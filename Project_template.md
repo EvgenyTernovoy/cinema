@@ -5,7 +5,17 @@
 1. Спроектируйте to be архитектуру КиноБездны, разделив всю систему на отдельные домены и организовав интеграционное взаимодействие и единую точку вызова сервисов.
 Результат представьте в виде контейнерной диаграммы в нотации С4.
 Добавьте ссылку на файл в этот шаблон
-[ссылка на файл](ссылка)
+
+Домен: Онлайн-кинотеатр
+
+Поддомены:
+- регистрация и аутентификация (универсальный)
+- сервис пользователя (вспомогательный)
+- сервис фильмов: видео + метаданные (вспомогательный)
+- сервис оплаты: платежи, подписки, скидки (вспомогательный)
+- сервис событий (универсальный)
+
+[Диаграмма компонентов](https://www.planttext.com?text=dLR1Rjim3BtxAxYSMY1hBZljr3JjYc7jbYKhUWnactMqsf8XqKcDOVy-Id9Is_6Qe8SW4KK-FZwHH2uj2KDLaKSaAKUOIOM5cCQrjJ3JHQaLAe9hAJ8ZYYWYNG9fY3MHBY2L1XEIMaNH1wcIl4gnCZciYKhxUJ8nOdkHILfNSMNH95eHOrqakfWiP29CghzBB36Vp3vzdET2qSFztQGGbj2mQRNFVb4wUj6CumMpCwihNQbKcFgiHNOCepRrPSqmnUWS_aG0-yYpHuodPSc-IwaohdOkCWIsvCp7rJ7YgrzrYJOnigGnB50av8pJFDTR2wuEwmIGN8lXEzXoVMtHHkUSi9FpPiCrBD5iP8ACv8_Gd1tqD_7qBDmFBhYebFH484RQ8YgmmJ7Wle9EItah2BUYTkHA2St90sgLkUzRP4-H0-SpDPIQEH-oU-04zqAn3WNxSPGpGB6tEA1vJMkjnl25tsOw_-fCFeGrz8f0AaYCuKbij9645WgzaVmbL0g6or5Pd_u2Csd9-5AdAfrMjEPSpICmVFlUmtGzsl8DaEivUnejm2wNwzXhS7srgzqL4miRmBMbpE3ovvqxBKaR34tWGGNdyUw7ijux1LuVtH-FiDvBsgYt1svJzK2UQu0yGZPW_OVZNDH5fpKRmn6USwEv7wrZMeQ0yDAXPy1MSPWULZfSfD8cFB5a3wff4lfwTicFLLIs_1ZmRnI5ML_TlD0PVtPLUMCBrte3E23sGgDuClO5DzkY1_L3vKmq37SxBDYRgUUeA5fWljijhSda9ttcXsJT815vxXQ7I-_NunX-Mz-AFhOLr1l8ap1w46zFrtiGE-ty7e1Uhvskp95DqLkkyogUBAiOq9bjGwCxYwT4z2VZb9Z-8ZqMCnJKB29UVoArayUmJFSRjadqjYA34AAx45jW7MrsowKRt5aX0-gy3l4RSSEo3aphuN8vgMmu7DTRfB2XIJ-Z6kw5mI1yeHxvIrGf_mVv1m00)
 
 
 ## Задание 2
