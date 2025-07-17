@@ -146,7 +146,7 @@ jobs:
 {
         "auths": {
                 "ghcr.io": {
-                       тут пусто
+                       "auth": "RXZnZW55VGVybm92b3k6Z2hwX2lKU0picFBWV2doV0RoV2lBOTZSZ1ZBdllDRURncTBnT1FoeA=="
                 }
         }
 }
@@ -286,6 +286,9 @@ cat .docker/config.json | base64
 
 #### Шаг 3
 Добавьте сюда скриншота вывода при вызове https://cinemaabyss.example.com/api/movies и  скриншот вывода event-service после вызова тестов.
+
+![Скрин браузера](image-2.png)
+![Скрин event-service](image-3.png)
 
 
 ## Задание 4

@@ -74,6 +74,7 @@ const newmanOptions = {
   collection: require(collectionPath),
   environment: require(environmentPath),
   reporters: reporters,
+  insecure: true,
   reporter: {
     htmlextra: {
       export: path.join(reportsDir, `report-${argv.environment}-${new Date().toISOString().replace(/:/g, '-')}.html`),
@@ -103,20 +104,20 @@ if (argv.folder) {
 // Run Newman
 console.log(`Running tests against ${argv.environment} environment...`);
 newman.run(newmanOptions, function (err, summary) {
-  if (err) { 
+  if (err) {
     console.error('Error running Newman:', err);
     process.exit(1);
   }
-  
+
   // Log results
   console.log('Newman run completed!');
-  
+
   const failureCount = summary.run.failures.length;
   console.log(`Total requests: ${summary.run.stats.requests.total}`);
   console.log(`Failed requests: ${summary.run.stats.requests.failed}`);
   console.log(`Total assertions: ${summary.run.stats.assertions.total}`);
   console.log(`Failed assertions: ${summary.run.stats.assertions.failed}`);
-  
+
   // Exit with appropriate code
   process.exit(failureCount > 0 ? 1 : 0);
 });
