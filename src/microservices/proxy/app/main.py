@@ -23,6 +23,44 @@ logging.basicConfig(level=logging.INFO)
 async def health():
     return { "status": True }            
 
+@app.api_route("/api/movies/health", methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"])
+async def proxy_movies_health(request: Request):
+    if not MOVIE_SERVICE_URL:
+        raise HTTPException(status_code=500, detail="MOVIE_SERVICE_URL not set")
+
+    # Сбор query-параметров в строку
+    query_string = request.url.query
+    url = f"{MOVIE_SERVICE_URL}{request.url.path}"
+    if query_string:
+        url = f"{url}?{query_string}"
+    
+    method = request.method
+    headers = dict(request.headers)
+    body = await request.body()
+
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.request(
+                method=method,
+                url=url,
+                content=body,
+                headers=headers
+            )
+
+        return Response(
+            content=response.content,
+            status_code=response.status_code,
+            headers=dict(response.headers),
+            media_type=response.headers.get("content-type")
+        )
+
+    except httpx.RequestError as e:
+        logging.warning(f"Request to movies service failed: {e}")
+        raise HTTPException(status_code=502, detail="Failed to reach movies service")
+
+    except httpx.HTTPStatusError as e:
+        raise HTTPException(status_code=e.response.status_code, detail=e.response.text)
+
 @app.api_route("/api/movies", methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"])
 async def proxy_movies(request: Request):
     # Определение назначения
