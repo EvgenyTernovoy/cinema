@@ -4,7 +4,7 @@ import random
 import httpx
 import logging
 from fastapi import FastAPI, Request
-
+from fastapi.responses import Response
 app = FastAPI()
 
 
@@ -23,9 +23,9 @@ logging.basicConfig(level=logging.INFO)
 async def health():
     return { "status": True }            
 
-@app.get("/api/movies")
-async def get_movies(request: Request):
-    # Выбор сервиса на основе стратегии
+@app.api_route("/api/movies", methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"])
+async def proxy_movies(request: Request):
+    # Определение назначения
     if GRADUAL_MIGRATION:
         roll = random.randint(1, 100)
         if roll <= MOVIES_MIGRATION_PERCENT:
@@ -39,15 +39,27 @@ async def get_movies(request: Request):
         source = "monolith (default)"
 
     proxied_url = f"{target_url}{request.url.path}"
+    method = request.method
+    headers = dict(request.headers)
+    body = await request.body()
 
-    logging.info(f"Routing /api/movies to [{source}]: {proxied_url}")
+    logging.info(f"{method} /api/movies → {source} → {proxied_url}")
 
     try:
         async with httpx.AsyncClient() as client:
-            response = await client.get(proxied_url)
-            response.raise_for_status()
-            logging.info(f"Success [{response.status_code}] from {source}")
-            return response.json()
+            response = await client.request(
+                method=method,
+                url=proxied_url,
+                content=body,
+                headers=headers
+            )
+
+        return Response(
+            content=response.content,
+            status_code=response.status_code,
+            headers=dict(response.headers),
+            media_type=response.headers.get("content-type")
+        )
 
     except httpx.HTTPStatusError as e:
         logging.warning(f"HTTP error from {source}: {e.response.status_code} - {e.response.text}")
@@ -57,17 +69,33 @@ async def get_movies(request: Request):
         logging.error(f"Request failed to {source}: {str(e)}")
         raise HTTPException(status_code=502, detail="Failed to reach backend service")
     
-@app.get("/api/users")
-async def get_movies(request: Request):
+@app.api_route("/api/users", methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"])
+async def proxy_users(request: Request):
     if not MONOLITH_API_URL:
         raise HTTPException(status_code=500, detail="MONOLITH_API_URL not set")
 
+    target_url = f"{MONOLITH_API_URL}{request.url.path}"
+    method = request.method
+    headers = dict(request.headers)
+    body = await request.body()
+
+    logging.info(f"{method} /api/users → monolith → {target_url}")
+
     try:
         async with httpx.AsyncClient() as client:
-            url = f"{MONOLITH_API_URL}{request.url.path}"
-            response = await client.get(url)
-            response.raise_for_status()
-            return response.json()
+            response = await client.request(
+                method=method,
+                url=target_url,
+                content=body,
+                headers=headers
+            )
+
+        return Response(
+            content=response.content,
+            status_code=response.status_code,
+            headers=dict(response.headers),
+            media_type=response.headers.get("content-type")
+        )
 
     except httpx.RequestError as e:
         logging.warning(f"Request to monolith failed: {e}")
