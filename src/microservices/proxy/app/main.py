@@ -38,18 +38,24 @@ async def proxy_movies(request: Request):
         target_url = MONOLITH_API_URL
         source = "monolith (default)"
 
-    proxied_url = f"{target_url}{request.url.path}"
+    # Сбор query-параметров в строку
+    query_string = request.url.query
+    url = f"{target_url}{request.url.path}"
+    if query_string:
+        url = f"{url}?{query_string}"
+
+    
     method = request.method
     headers = dict(request.headers)
     body = await request.body()
 
-    logging.info(f"{method} /api/movies → {source} → {proxied_url}")
+    logging.info(f"{method} /api/movies → {source} → {url}")
 
     try:
         async with httpx.AsyncClient() as client:
             response = await client.request(
                 method=method,
-                url=proxied_url,
+                url=url,
                 content=body,
                 headers=headers
             )
@@ -74,18 +80,23 @@ async def proxy_users(request: Request):
     if not MONOLITH_API_URL:
         raise HTTPException(status_code=500, detail="MONOLITH_API_URL not set")
 
-    target_url = f"{MONOLITH_API_URL}{request.url.path}"
+    # Сбор query-параметров в строку
+    query_string = request.url.query
+    url = f"{MONOLITH_API_URL}{request.url.path}"
+    if query_string:
+        url = f"{url}?{query_string}"
+    
     method = request.method
     headers = dict(request.headers)
     body = await request.body()
 
-    logging.info(f"{method} /api/users → monolith → {target_url}")
+    logging.info(f"{method} /api/users → monolith → {url}")
 
     try:
         async with httpx.AsyncClient() as client:
             response = await client.request(
                 method=method,
-                url=target_url,
+                url=url,
                 content=body,
                 headers=headers
             )
