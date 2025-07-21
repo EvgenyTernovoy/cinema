@@ -28,6 +28,7 @@ REPORTERS="cli,htmlextra,junit"
 BAIL=false
 TIMEOUT=10000
 USE_DOCKER=false
+NODE_TLS_REJECT_UNAUTHORIZED=0
 
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do

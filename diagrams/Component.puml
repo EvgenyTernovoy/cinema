@@ -1,0 +1,50 @@
+@startuml
+title CinemaAbyss Component Diagram
+
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+Container_Boundary(CinemaAbyss, "CinemaAbyss System") {
+  Container(WebApp, "Single Page Application", "Typescript, React", "Allows users to interact with CinemaAbyss")
+  
+  Container(EventService, "Event Service", "Kafka", "Communiation between services")
+  Container(ApiGateway, "Api Gateway", "Kong", "General entry point")
+  
+  Container(UserManagement, "User management", "Python, FastAPI", "Managing user data, favorites movies and ratings")
+  Container(RegistrationAndAuthentication, "Registration and Authentication Service", "Python, FastAPI", "Authentication and registration")
+  ContainerDb(UserDB, "User database", "PostgreSQL", "Stores user and auth data")
+  
+  Container(MovieService, "Movie Service", "Python, FastAPI", "Managing movies data")
+  ContainerDb(MovieDB, "Movie database", "PostgreSQL", "Store movie data")
+  
+  Container(PaymentService, "Payment Service", "Python, FastAPI", "Processing payments and manage subscriptions and discounts")
+  ContainerDb(PaymentDB, "Payment database", "PostgreSQL", "Store payment data")
+}
+
+System_Ext(ExtPaymentSystem, "Payment system ", "External Payment System")
+System_Ext(ExtOnlineCinema, "External Online Cinema")
+
+
+Rel(WebApp,ApiGateway,"Makes API calls to", "https, json")
+
+Rel(ApiGateway,UserManagement,"Makes API calls to", "https, json")
+Rel(ApiGateway,RegistrationAndAuthentication,"Makes API calls to", "https, json")
+Rel(ApiGateway,MovieService,"Makes API calls to", "https, json")
+Rel(ApiGateway,PaymentService,"Makes API calls to", "https, json")
+
+Rel(RegistrationAndAuthentication, EventService, "Pub/Sub events")
+Rel(MovieService, EventService, "Pub/Sub events")
+Rel(PaymentService, EventService, "Pub/Sub events")
+Rel(UserManagement, EventService, "Pub/Sub events")
+
+Rel(UserManagement,UserDB,"Reads/Writes user data")
+Rel(RegistrationAndAuthentication,UserDB,"Reads/Writes authentication data")
+Rel(MovieService,MovieDB,"Reads/Writes movie data")
+Rel(PaymentService,PaymentDB,"Reads/Writes movie data")
+
+Rel(PaymentService, ExtPaymentSystem, "Processing payments")
+Rel(RegistrationAndAuthentication, ExtOnlineCinema, "Get auth token")
+Rel(MovieService, ExtOnlineCinema, "Get ext movie data")
+
+@enduml

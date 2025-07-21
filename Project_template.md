@@ -5,7 +5,17 @@
 1. Спроектируйте to be архитектуру КиноБездны, разделив всю систему на отдельные домены и организовав интеграционное взаимодействие и единую точку вызова сервисов.
 Результат представьте в виде контейнерной диаграммы в нотации С4.
 Добавьте ссылку на файл в этот шаблон
-[ссылка на файл](ссылка)
+
+Домен: Онлайн-кинотеатр
+
+Поддомены:
+- регистрация и аутентификация (универсальный)
+- сервис пользователя (вспомогательный)
+- сервис фильмов: видео + метаданные (вспомогательный)
+- сервис оплаты: платежи, подписки, скидки (вспомогательный)
+- сервис событий (универсальный)
+
+[Диаграмма компонентов](https://www.planttext.com?text=dLR1Rjim3BtxAxYSMY1hBZljr3JjYc7jbYKhUWnactMqsf8XqKcDOVy-Id9Is_6Qe8SW4KK-FZwHH2uj2KDLaKSaAKUOIOM5cCQrjJ3JHQaLAe9hAJ8ZYYWYNG9fY3MHBY2L1XEIMaNH1wcIl4gnCZciYKhxUJ8nOdkHILfNSMNH95eHOrqakfWiP29CghzBB36Vp3vzdET2qSFztQGGbj2mQRNFVb4wUj6CumMpCwihNQbKcFgiHNOCepRrPSqmnUWS_aG0-yYpHuodPSc-IwaohdOkCWIsvCp7rJ7YgrzrYJOnigGnB50av8pJFDTR2wuEwmIGN8lXEzXoVMtHHkUSi9FpPiCrBD5iP8ACv8_Gd1tqD_7qBDmFBhYebFH484RQ8YgmmJ7Wle9EItah2BUYTkHA2St90sgLkUzRP4-H0-SpDPIQEH-oU-04zqAn3WNxSPGpGB6tEA1vJMkjnl25tsOw_-fCFeGrz8f0AaYCuKbij9645WgzaVmbL0g6or5Pd_u2Csd9-5AdAfrMjEPSpICmVFlUmtGzsl8DaEivUnejm2wNwzXhS7srgzqL4miRmBMbpE3ovvqxBKaR34tWGGNdyUw7ijux1LuVtH-FiDvBsgYt1svJzK2UQu0yGZPW_OVZNDH5fpKRmn6USwEv7wrZMeQ0yDAXPy1MSPWULZfSfD8cFB5a3wff4lfwTicFLLIs_1ZmRnI5ML_TlD0PVtPLUMCBrte3E23sGgDuClO5DzkY1_L3vKmq37SxBDYRgUUeA5fWljijhSda9ttcXsJT815vxXQ7I-_NunX-Mz-AFhOLr1l8ap1w46zFrtiGE-ty7e1Uhvskp95DqLkkyogUBAiOq9bjGwCxYwT4z2VZb9Z-8ZqMCnJKB29UVoArayUmJFSRjadqjYA34AAx45jW7MrsowKRt5aX0-gy3l4RSSEo3aphuN8vgMmu7DTRfB2XIJ-Z6kw5mI1yeHxvIrGf_mVv1m00)
 
 
 ## Задание 2
@@ -58,6 +68,9 @@
 
 Необходимые тесты для проверки этого API вызываются при запуске npm run test:local из папки tests/postman 
 Приложите скриншот тестов и скриншот состояния топиков Kafka http://localhost:8090 
+
+![Скриншот тестов](image.png)
+![Состояние топиков kafka](image-1.png)
 
 
 ## Задание 3
@@ -133,7 +146,7 @@ jobs:
 {
         "auths": {
                 "ghcr.io": {
-                       тут пусто
+                       "auth": "RXZnZW55VGVybm92b3k6Z2hwX2lKU0picFBWV2doV0RoV2lBOTZSZ1ZBdllDRURncTBnT1FoeA=="
                 }
         }
 }
@@ -274,6 +287,9 @@ cat .docker/config.json | base64
 #### Шаг 3
 Добавьте сюда скриншота вывода при вызове https://cinemaabyss.example.com/api/movies и  скриншот вывода event-service после вызова тестов.
 
+![Скрин браузера](image-2.png)
+![Скрин event-service](image-3.png)
+
 
 ## Задание 4
 Для простоты дальнейшего обновления и развертывания вам как архитектуру необходимо так же реализовать helm-чарты для прокси-сервиса и проверить работу 
@@ -349,6 +365,9 @@ minikube tunnel
 https://cinemaabyss.example.com/api/movies
 и приложите скриншот развертывания helm и вывода https://cinemaabyss.example.com/api/movies
 
+![Скрин api/movies](image-4.png)
+![Скрин развертывания helm](image-5.png)
+
 
 # Задание 5
 Компания планирует активно развиваться и для повышения надежности, безопасности, реализации сетевых паттернов типа Circuit Breaker и канареечного деплоя вам как архитектору необходимо развернуть istio и настроить circuit breaker для monolith и movies сервисов.
@@ -414,6 +433,8 @@ You can see 21 for the upstream_rq_pending_overflow value which means 21 calls s
 ```
 
 Приложите скриншот работы circuit breaker'а
+
+![Cкриншот работы circuit breaker'а](image-6.png)
 
 Удаляем все
 ```bash
