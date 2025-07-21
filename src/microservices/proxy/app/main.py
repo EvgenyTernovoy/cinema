@@ -152,3 +152,83 @@ async def proxy_users(request: Request):
 
     except httpx.HTTPStatusError as e:
         raise HTTPException(status_code=e.response.status_code, detail=e.response.text)
+    
+@app.api_route("/api/payments", methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"])
+async def proxy_users(request: Request):
+    if not MONOLITH_API_URL:
+        raise HTTPException(status_code=500, detail="MONOLITH_API_URL not set")
+
+    # Сбор query-параметров в строку
+    query_string = request.url.query
+    url = f"{MONOLITH_API_URL}{request.url.path}"
+    if query_string:
+        url = f"{url}?{query_string}"
+    
+    method = request.method
+    headers = dict(request.headers)
+    body = await request.body()
+
+    logging.info(f"{method} /api/payments → monolith → {url}")
+
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.request(
+                method=method,
+                url=url,
+                content=body,
+                headers=headers
+            )
+
+        return Response(
+            content=response.content,
+            status_code=response.status_code,
+            headers=dict(response.headers),
+            media_type=response.headers.get("content-type")
+        )
+
+    except httpx.RequestError as e:
+        logging.warning(f"Request to monolith failed: {e}")
+        raise HTTPException(status_code=502, detail="Failed to reach monolith")
+
+    except httpx.HTTPStatusError as e:
+        raise HTTPException(status_code=e.response.status_code, detail=e.response.text)
+    
+@app.api_route("/api/subscriptions", methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"])
+async def proxy_users(request: Request):
+    if not MONOLITH_API_URL:
+        raise HTTPException(status_code=500, detail="MONOLITH_API_URL not set")
+
+    # Сбор query-параметров в строку
+    query_string = request.url.query
+    url = f"{MONOLITH_API_URL}{request.url.path}"
+    if query_string:
+        url = f"{url}?{query_string}"
+    
+    method = request.method
+    headers = dict(request.headers)
+    body = await request.body()
+
+    logging.info(f"{method} /api/subscriptions → monolith → {url}")
+
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.request(
+                method=method,
+                url=url,
+                content=body,
+                headers=headers
+            )
+
+        return Response(
+            content=response.content,
+            status_code=response.status_code,
+            headers=dict(response.headers),
+            media_type=response.headers.get("content-type")
+        )
+
+    except httpx.RequestError as e:
+        logging.warning(f"Request to monolith failed: {e}")
+        raise HTTPException(status_code=502, detail="Failed to reach monolith")
+
+    except httpx.HTTPStatusError as e:
+        raise HTTPException(status_code=e.response.status_code, detail=e.response.text)
